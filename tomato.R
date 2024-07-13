@@ -49,7 +49,7 @@ UK_p1 <- ggplot(UK_summary, aes(y=weight,
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="United Kingdom") +
+       title="United Kingdom tomato suppliers") +
   scale_y_continuous(label=comma)
 ggplotly(UK_p1, tooltip = c("text"))
 
