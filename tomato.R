@@ -36,7 +36,8 @@ UK_p1 <- ggplot(UK_summary, aes(y=weight, x=Year, group=Exporter, text=paste0(Ex
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="United Kingdom") 
+       title="United Kingdom") +
+  scale_y_continuous(label=comma)
 ggplotly(UK_p1, tooltip = c("text"))
 # stacked area
 UK_p1 <- ggplot(UK_summary, aes(y=weight, 
@@ -48,7 +49,8 @@ UK_p1 <- ggplot(UK_summary, aes(y=weight,
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="United Kingdom") 
+       title="United Kingdom") +
+  scale_y_continuous(label=comma)
 ggplotly(UK_p1, tooltip = c("text"))
 
 # Germany tomato suppliers over time
@@ -74,7 +76,8 @@ DE_p1 <- ggplot(DE_summary, aes(y=weight, x=Year, group=Exporter, text=paste0(Ex
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="Germany") 
+       title="Germany") +
+  scale_y_continuous(label=comma)
 ggplotly(DE_p1, tooltip = c("text"))
 # stacked area
 DE_p2 <- ggplot(DE_summary, aes(y=weight, 
@@ -86,7 +89,8 @@ DE_p2 <- ggplot(DE_summary, aes(y=weight,
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="United Kingdom") 
+       title="United Kingdom") +
+  scale_y_continuous(label=comma)
 ggplotly(DE_p2, tooltip = c("text"))
 
 # Germany tomato suppliers over time
@@ -112,7 +116,8 @@ FR_p1 <- ggplot(FR_summary, aes(y=weight, x=Year, group=Exporter, text=paste0(Ex
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="France") 
+       title="France") +
+  scale_y_continuous(label=comma)
 ggplotly(FR_p1, tooltip = c("text"))
 # stacked area
 FR_p2 <- ggplot(FR_summary, aes(y=weight, 
@@ -124,7 +129,8 @@ FR_p2 <- ggplot(FR_summary, aes(y=weight,
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="France") 
+       title="France") +
+  scale_y_continuous(label=comma)
 ggplotly(FR_p2, tooltip = c("text"))
 
 
@@ -154,7 +160,8 @@ ES_p1 <- ggplot(ES_summary, aes(y=weight, x=Year, group=Importer, text=paste0(Im
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="Spain") 
+       title="Spanish tomato exports") +
+  scale_y_continuous(label=comma)
 ggplotly(ES_p1, tooltip = c("text"))
 # stacked area
 ES_p2 <- ggplot(ES_summary, aes(y=weight, 
@@ -166,7 +173,8 @@ ES_p2 <- ggplot(ES_summary, aes(y=weight,
   #theme(legend.position="none") +
   labs(y="Weight (tonnes)", 
        x="Year",
-       title="Spain") 
+       title="Cumulative Spanish tomato exports") +
+  scale_y_continuous(label=comma)
 ggplotly(ES_p2, tooltip = c("text"))
 
 
