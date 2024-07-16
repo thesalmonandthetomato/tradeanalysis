@@ -49,4 +49,4 @@ myAnimation <- animate(p,
         fps = 25, 
         res = 200, height = 1200, width =1200)
 myAnimation
-anim_save("test.gif", animation = myAnimation)
+anim_save("Scottish salmon mortality/test.gif", animation = myAnimation)
