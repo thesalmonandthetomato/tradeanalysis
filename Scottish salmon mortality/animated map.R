@@ -27,7 +27,7 @@ morts <- drop_na(morts, latitude)
 morts$year <- substr(morts$`Start Date`, 1, 4)
 morts$group <- seq(1, nrow(morts), 1)
 
-# key <- '890cbc42-c1c1-4f8e-a575-ac0a17536104'
+key <- '890cbc42-c1c1-4f8e-a575-ac0a17536104'
 register_stadiamaps(key, write = TRUE)
 # create plot
 p <- qmplot(x = longitude, y = latitude, data = morts, 
