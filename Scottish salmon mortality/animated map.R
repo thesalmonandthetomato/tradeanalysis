@@ -42,7 +42,8 @@ p <- qmplot(x = longitude, y = latitude, data = morts,
   exit_fade() + # fade out
   guides(colour = "none", alpha = "none", size=guide_legend(title="Weight (kg)")) +
   scale_size_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),
-                        range = c(1, 10)) #add thousand separator to numbers
+                        range = c(1, 10)) + #add thousand separator to numbers
+  ease_aes("exponential-in-out")
 # animate plot
 myAnimation <- animate(p, 
         duration = 20, 
