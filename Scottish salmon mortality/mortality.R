@@ -3,7 +3,10 @@ library(tidyverse)
 library(scales)
 library(plotly)
 
-morts <- read_excel("~/Library/CloudStorage/GoogleDrive-nealhaddaway@gmail.com/My Drive/The salmon and the tomato/data/Scottish salmon mortality/morts.xlsx")
+morts <- read_excel("Scottish salmon mortality/morts.xlsx")
+
+#restrict to salmon
+morts <- subset(morts, Species == "SAL")
 
 morts$year <- substr(morts$`Start Date`, 1, 4)
 

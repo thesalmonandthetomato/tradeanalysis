@@ -10,7 +10,10 @@ library(tidyverse)
 require(scales) 
 
 # load data 
-morts <- read_excel("~/Library/CloudStorage/GoogleDrive-nealhaddaway@gmail.com/My Drive/The salmon and the tomato/data/Scottish salmon mortality/morts.xlsx")
+morts <- read_excel("Scottish salmon mortality/morts.xlsx")
+
+#restrict to salmon
+morts <- subset(morts, Species == "SAL")
 
 # convert OS NGR to lat/long
 morts$latitude <- osg_parse(grid_refs = c(morts$`OS Grid Reference`), coord_system = c("WGS84"))$lat
