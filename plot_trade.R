@@ -1,14 +1,23 @@
+library(readxl)
+library(tidyverse)
+library(scales)
+library(plotly)
+library(viridis)
+library(hrbrthemes)
+library(comtradr)
+
 #' Plot trade data
 #' @param plot_type Type of plot, either line plot ('line') or 
 #' area plot ('area'). Default is 'line'.
 #' @examples
-#' plot_trade(reporter =  "ESP",
+#' plot_trade(reporter =  "all_countries",
 #'            flow_direction = "export",
 #'            partner = "all_countries",
 #'            start_date = 2012,
 #'            end_date = 2023,
-#'            commodity_code = '0702',
-#'            plot_type = 'area')
+#'            commodity_code = c('030214'),
+#'            plot_type = 'line',
+#'            interactive = TRUE)
 #' 
 plot_trade <- function(reporter =  "ESP",
                        flow_direction = "export",
@@ -16,13 +25,13 @@ plot_trade <- function(reporter =  "ESP",
                        start_date = 2012,
                        end_date = 2023,
                        commodity_code = '0702',
-                       plot_type = 'line') {
+                       plot_type = 'line',
+                       interactive = FALSE) {
   
   set_primary_comtrade_key('e4f07fff200345e7b0239c259c7fb3f9')
   
-  # Lookup codes for a product
-  tomato_codes <- ct_commodity_lookup("tomato", return_code = TRUE, return_char = TRUE)
-  ES_tomato_2012_2013 <- ct_get_data(
+  # query comtrade
+  data <- ct_get_data(
     reporter =  reporter,
     flow_direction = flow_direction,
     partner = partner,
@@ -31,14 +40,16 @@ plot_trade <- function(reporter =  "ESP",
     commodity_code = commodity_code
   )
   
+  # need to creat if clause for partner top 15 (imports) versus reporter top 15 (exports)
+  
   # combine all non-top-15 countries
-  ES_tomato_2012_2013 <- ES_tomato_2012_2013[order(ES_tomato_2012_2013$net_wgt, decreasing = TRUE),]
-  ES_top15 <- unique(ES_tomato_2012_2013$partner_desc)[1:15]
-  ES_summary <- ES_tomato_2012_2013 %>%
-    group_by(reporter_iso, partner_desc, ref_year) %>%
+  data <- data[order(data$net_wgt, decreasing = TRUE),]
+  ES_top15 <- unique(data$partner_desc)[1:15]
+  ES_summary <- data %>%
+    group_by(partner_iso, partner_desc, ref_year) %>%
     summarise(net_wgt = sum(net_wgt))
   ES_summary_top15 <- subset(ES_summary, partner_desc %in% ES_top15)
-  ES_summary_rest <- subset(ES_tomato_2012_2013, !partner_desc %in% ES_top15)
+  ES_summary_rest <- subset(data, !partner_desc %in% ES_top15)
   ES_summary_rest <- ES_summary_rest %>%
     group_by(ref_year) %>%
     summarise(net_wgt = sum(net_wgt))
@@ -57,6 +68,10 @@ plot_trade <- function(reporter =  "ESP",
     partner_p <- partner
   }
   
+  # look up HS code description
+  hs_codes <- read.csv('hscodes.csv', colClasses=c("hscode"="character"))
+  commodity_desc <- hs_codes[grep(commodity_code, hs_codes$hscode),2]
+  
   # plot
   if(plot_type == 'line'){
     # line plot
@@ -69,7 +84,7 @@ plot_trade <- function(reporter =  "ESP",
       #theme(legend.position="none") +
       labs(y="Weight (kilograms)", 
            x="Year",
-           caption=paste0("Reporter: ", reporter_p, "\nPartner: ", partner_p, "\nCommodity: ", commodity_code, "\nYear(s): ", start_date, " - ", end_date, "\nFlow: ", flow_direction),
+           caption=paste0("Reporter: ", reporter_p, "\nPartner: ", partner_p, "\nCommodity: ", commodity_code, " - ", paste0(strwrap(commodity_desc, 70), collapse='\n'), "\nYear(s): ", start_date, " - ", end_date, "\nFlow: ", flow_direction),
            colour="Partner") +
       scale_y_continuous(label=comma) +
       theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
@@ -87,13 +102,17 @@ plot_trade <- function(reporter =  "ESP",
       #theme(legend.position="none") +
       labs(y="Weight (kilograms)", 
            x="Year",
-           caption=paste0("Reporter: ", reporter_p, "\nPartner: ", partner_p, "\nCommodity: ", commodity_code, "\nYear(s): ", start_date, " - ", end_date, "\nFlow: ", flow_direction),
+           caption=paste0("Reporter: ", reporter_p, "\nPartner: ", partner_p, "\nCommodity: ", commodity_code, " - ", paste0(strwrap(commodity_desc, 70), collapse='\n'), "\nYear(s): ", start_date, " - ", end_date, "\nFlow: ", flow_direction),
            fill="Partner") +
       scale_y_continuous(label=comma) + 
       theme(axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
             plot.caption = element_text(hjust = 0)) + 
       scale_x_continuous(breaks = seq(min(ES_summary$ref_year), max(ES_summary$ref_year), by = 1)) +
       theme(legend.key.size = unit(0.5, "cm"))
+  }
+  
+  if(interactive==TRUE){
+    plot <- ggplotly(plot)
   }
   
   return(plot)

@@ -3,6 +3,15 @@ library(tidyverse)
 library(scales)
 library(plotly)
 
+
+#' comtrade codes for salmon
+#' 030212 - Fresh Or Chilled Pacific Salmon Oncorhynchus Nerka, Oncorhynchus Gorbuscha, Oncor
+#' 0302140003 - Atlantic and Danube salmon, fresh or chilled, excluding fillets, other meat portions, livers and roes - Farmed
+#' 030214 - Fresh or chilled Atlantic salmon "Salmo salar" and Danube salmon "Hucho hucho"
+#' 030313 - Frozen, Atlantic salmon "Salmo salar" and Danube salmon "Hucho hucho"
+#' 030541 - Smoked Pacific salmon "Oncorhynchus nerka, Oncorhynchus gorbuscha, Oncorhynchus keta, Oncorhynchus tschawytscha, Oncorhynchus kisutch, Oncorhynchus masou and Oncorhynchus rhodurus", Atlantic salmon "Salmo salar" and Danube salmon "Hucho hucho", incl. fillets (excl. offal)
+#' 030441 - Fresh or chilled fillets of Pacific salmon "Oncorhynchus nerka, Oncorhynchus gorbuscha, Oncorhynchus keta, Oncorhynchus tschawytscha, Oncorhynchus kisutch, Oncorhynchus masou and Oncorhynchus rhodurus", Atlantic salmon "Salmo salar" and Danube salmon "Hucho hucho"
+
 options("scipen"=100, "digits"=4) #set not to use scientific display of integers
 
 # import data
