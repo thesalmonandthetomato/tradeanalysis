@@ -1,15 +1,6 @@
-install.packages("comtradr")
 library(comtradr)
 
 set_primary_comtrade_key('e4f07fff200345e7b0239c259c7fb3f9')
-
-# Request trade between countries (12 years max)
-example1 <- comtradr::ct_get_data(
-  reporter = 'ESP',
-  partner = "all_countries",
-  start_date = 2012,
-  end_date = 2023
-)
 
 # Lookup codes for a product
 tomato_codes <- ct_commodity_lookup("tomato", return_code = TRUE, return_char = TRUE)

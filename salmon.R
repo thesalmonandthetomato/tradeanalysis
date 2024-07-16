@@ -18,21 +18,18 @@ options("scipen"=100, "digits"=4) #set not to use scientific display of integers
 data <- read_excel("2007-2022_freshSalmon_allExporters_allImporters.xlsx", 
                    sheet = "Trades")
 
+# UK data
 UK <- subset(big_exporters_time, Exporter == "United Kingdom")
 
-#summarise EXPORTERS by country for 2022
+# subset data for 2022
 data_2022 <- subset(data, Year == 2022)
 data_2022 <- data_2022[complete.cases(data_2022[ , 13]),]
+
+#summarise EXPORTERS by country for 2022
 data_summary_2022_exporters <- data_2022 %>%
   group_by(`Exporter ISO3`, Exporter) %>%
   summarise(weight = sum(`Weight (1000kg)`)) 
 write.csv(data_summary_2022_exporters, '2022 salmon importer data.csv', row.names = FALSE)
-
-#summarise IMPORTERS by country for 2022
-data_summary_2022_importers <- data_2022 %>%
-  group_by(`Importer ISO3`, Importer) %>%
-  summarise(weight = sum(`Weight (1000kg)`)) 
-write.csv(data_summary_2022_importers, '2022 salmon exporter data.csv', row.names = FALSE)
 
 # top 10 exporters in 2022
 data_summary_2022_exporters <- data_summary_2022_exporters[order(-data_summary_2022_exporters$weight),]
@@ -72,18 +69,45 @@ ggplotly(p, tooltip = c("labels"))
 
 
 
-# declare `city` as the SQL 'query by' column
-tx <- highlight_key(big_exporters_time, key=~Exporter)
 
-# initiate a plotly object
-base <- plot_ly(tx, x=~Year, y=~weight, color = ~Exporter)
+#summarise IMPORTERS by country for 2022
+data_summary_2022_importers <- data_2022 %>%
+  group_by(`Importer ISO3`, Importer) %>%
+  summarise(weight = sum(`Weight (1000kg)`)) 
+write.csv(data_summary_2022_importers, '2022 salmon importer data.csv', row.names = FALSE)
 
-# create a time series of median house price
-plot <- base %>%
-  group_by(Exporter) %>%
-  add_lines(x = ~Year, y = ~weight,
-            hovertemplate = paste('<b>%{x}</b>: %{y:,.0f} tonnes'),) %>%
-  layout(title = "Top salmon exporters in 2022",
-         xaxis = list(title = "Year"),
-         yaxis = list (title = "Weight (tonnes)"))
-plot 
+# top 10 importers in 2022
+data_summary_2022_importers <- data_summary_2022_importers[order(-data_summary_2022_importers$weight),]
+top20_importers_2022 <- data_summary_2022_importers$Importer[1:20]
+
+# top 10 exporters in 2022 over time
+big_importers <- data.frame(Importer = top20_importers_2022)
+# set up source data
+data2 <- data[complete.cases(data[ , 13]),]
+source_data <- data2 %>%
+  group_by(`Importer ISO3`, Importer, Year) %>%
+  summarise(weight = sum(`Weight (1000kg)`)) 
+source_data <- pivot_wider(source_data, names_from = Year, values_from = weight)
+# merge dfs
+big_importers_time <- dplyr::left_join(big_importers, source_data, by = "Importer")
+big_importers_time <- cbind(big_importers_time[,1:2], big_importers_time[ , sort(colnames(big_importers_time)[3:22])])
+big_importers_time <- big_importers_time %>%
+  pivot_longer(cols = -c(Importer, `Importer ISO3`), names_to = "Year", values_to = "weight")
+big_importers_time <- merge(big_importers_time, alpha, by.x = "Importer", 
+                            by.y = "Importer", all.x = TRUE, all.y = FALSE)
+big_importers_time$labels <- paste0(big_importers_time$Year, ": ", big_importers_time$Importer, " - ", label_comma(accuracy = 1)(big_importers_time$weight), " tonnes")
+# restrict to cage producers
+big_importers_time <- big_importers_time[!is.na(big_importers_time$weight),]
+big_importers_time <- big_importers_time[!is.na(big_importers_time$`Importer ISO3`),]
+
+# plot
+p <- ggplot(data=big_importers_time, aes(x=Year, y=weight, group=Importer, colour=Importer,
+                                         text = paste0("Year: ", Year, "\nImporter: ", Importer, "\n", comma(round(weight,0)), " tonnes"))) +
+  geom_line() + geom_point() +
+  scale_alpha(guide = 'none') +
+  scale_y_continuous(label=comma) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90)) +
+  xlab("Year") + ylab("Weight (tonnes)")
+
+ggplotly(p, tooltip = c("text"))
