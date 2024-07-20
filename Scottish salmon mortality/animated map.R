@@ -51,3 +51,23 @@ myAnimation <- animate(p,
         res = 200, height = 1200, width =1200)
 myAnimation
 anim_save("Scottish salmon mortality/test.gif", animation = myAnimation)
+
+
+# map of locations moving over space
+data <- read.csv("animated trade flows data.csv")
+
+p <- qmplot(x = long, y = lat, data = data, 
+            group = group, #removes linkages/transitions between data
+            color = group, 
+            maptype = 'stamen_terrain_background',
+            size = 1.5) + 
+  transition_time(as.numeric(time)) + #adds annual transitions
+  labs(title = "Time: {round(frame_time, 0)}") + 
+  ease_aes("sine-in-out") + 
+  shadow_wake(wake_length = 0.4)
+animate(p, 
+        duration = 20, 
+        fps = 25, 
+        res = 200
+        , height = 1200, width =1200
+        )

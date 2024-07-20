@@ -1,0 +1,55 @@
+action,lat,long,group,time
+wild fish source,14.66938,-17.729596,fish feed,1
+fish processing factory,14.974726,-17.086895,fish feed,2
+fish import to Norway,32.335923,-12.663051,fish feed,4
+fish import to Norway,43.399098,-11.16891,fish feed,5
+fish import to Norway,48.786995,-5.587856,fish feed,6
+fish import to Norway,51.844294,2.849644,fish feed,7
+fish import to Norway,63.67228,9.033995,fish feed,8
+fish feed transport to Scotland,61.109608,-0.047869,fish feed,9
+fish feed import to Scotland,57.273959,-5.75171,fish feed,10
+fish feed import to Scotland,57.273959,-5.75171,fish feed 1,10
+fish feed import to Scotland,57.273959,-5.75171,fish feed 2,10
+fish feed import to Scotland,57.273959,-5.75171,fish feed 3,10
+feed distribution to salmon farms in Scotland,56.944433,-5.870328,fish feed 1,11
+feed distribution to salmon farms in Scotland,56.944433,-5.870328,fish feed 1,12
+feed distribution to salmon farms in Scotland,57.870442,-6.971246,fish feed 2,11
+feed distribution to salmon farms in Scotland,57.870442,-6.971246,fish feed 2,12
+feed distribution to salmon farms in Scotland,58.812435,-3.146631,fish feed 3,11
+feed distribution to salmon farms in Scotland,58.812435,-3.146631,fish feed 3,12
+salmon farming,56.944433,-5.870328,salmon 1,13
+salmon farming,57.870442,-6.971246,salmon 2,13
+salmon farming,58.812435,-3.146631,salmon 3,13
+salmon farming,56.944433,-5.870328,salmon 1,14
+salmon farming,57.870442,-6.971246,salmon 2,14
+salmon farming,58.812435,-3.146631,salmon 3,14
+salmon farming,56.944433,-5.870328,salmon 1,15
+salmon farming,57.870442,-6.971246,salmon 2,15
+salmon farming,58.812435,-3.146631,salmon 3,15
+salmon farming,56.944433,-5.870328,salmon 1,16
+salmon farming,57.870442,-6.971246,salmon 2,16
+salmon farming,58.812435,-3.146631,salmon 3,16
+salmon distribution,53.389457,-5.350184,salmon 1,17
+salmon distribution to france,49.901254,-6.88827,salmon 1,18
+salmon distribution to france,49.331819,-0.230555,salmon 1,19
+salmon distribution to Poland,50.895656,1.351476,salmon 2,18
+salmon distribution to Poland,55.059088,7.591711,salmon 2,19
+salmon distribution to Poland,54.958286,13.831945,salmon 2,20
+salmon distribution to Portugal,47.256382,-6.734461,salmon 3,18
+salmon distribution to Portugal,43.68325,-4.119715,salmon 3,19
+migration from Dakar,14.974726,-17.086895,migration,4
+migration from Dakar,19.540845,-16.665032,migration,5
+migration from Dakar,26.018976,-15.083001,migration,6
+arrival at El Hierro,27.717661,-18.024703,migration,7
+travel to Almer’a,32.195789,-12.973626,migration,8
+travel to Almer’a,35.979518,-7.041009,migration,9
+arrival in Almer’a,36.896961,-2.181064,migration,10
+growing of vegetables,36.756806,-2.696735,tomato,11
+growing of vegetables,36.756806,-2.696735,tomato,12
+transport of vegetables,40.129919,-3.261712,tomato,13
+transport of vegetables,43.756574,2.495124,tomato,14
+transport of vegetables,48.445017,2.670905,tomato,15
+export of vegetables,50.829393,1.597203,tomato,16
+distribution of vegetables,51.656618,-0.476336,tomato,17
+distribution of vegetables,52.433652,-2.058367,tomato,18
+sale of vegetables,52.691398,-2.716304,tomato,19
