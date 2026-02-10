@@ -1,4 +1,3 @@
-#' BGR to lat long
 library(ggplot2)
 library(ggmap)
 library(gganimate)
@@ -11,7 +10,7 @@ library(tidyverse)
 require(scales) 
 
 # load data 
-morts <- read_excel("Scottish salmon mortality/morts.xlsx")
+morts <- read_excel("Scottish salmon mortality/morts 2026.xlsx")
 
 #restrict to salmon
 morts <- subset(morts, Species == "SAL")
@@ -24,34 +23,50 @@ morts$longitude <- osg_parse(grid_refs = c(morts$`OS Grid Reference`), coord_sys
 morts <- drop_na(morts, `Weight (kg)`)
 morts <- drop_na(morts, latitude)
 
-# create year
-morts$year <- substr(morts$`Start Date`, 1, 4)
+# create event date from reporting date
+morts$event_date <- as.Date(
+  morts$`Date reported`,
+  tryFormats = c("%Y-%m-%d", "%d/%m/%Y", "%m/%d/%Y", "%d-%m-%Y")
+)
+# fallback for Excel-style numeric dates in any still-missing rows
+reported_numeric <- suppressWarnings(as.numeric(morts$`Date reported`))
+excel_date_rows <- is.na(morts$event_date) & !is.na(reported_numeric)
+morts$event_date[excel_date_rows] <- as.Date(reported_numeric[excel_date_rows], origin = "1899-12-30")
+morts <- drop_na(morts, event_date)
 morts$group <- seq(1, nrow(morts), 1)
+
+# keep bubbles visible for ~3-6 months (default 4 months) in the timeline
+persist_months <- 4
+persist_days <- round(30.44 * persist_months)
+persist_days <- max(90, min(183, persist_days))
+
+# expand each event across daily timesteps so visibility is continuous (~3-6 months)
+morts_anim <- morts %>%
+  tidyr::uncount(weights = persist_days, .id = "day_index") %>%
+  mutate(display_date = event_date + (day_index - 1))
 
 key <- '890cbc42-c1c1-4f8e-a575-ac0a17536104'
 register_stadiamaps(key, write = TRUE)
 # create plot
-p <- qmplot(x = longitude, y = latitude, data = morts, 
+p <- qmplot(x = longitude, y = latitude, data = morts_anim, 
             group = group, #removes linkages/transitions between data
             size = `Weight (kg)`, 
-            color = `Weight (kg)`, 
+            color = `Total mortality during event`, 
             alpha = .8,
             maptype = 'stamen_terrain_background',
             darken = .12,
             zoom = 6) + 
-  transition_states(year, transition_length = 1, state_length = 4, wrap = FALSE) + #adds annual transitions
+  transition_time(display_date) + # animate continuously by reported event date
   labs(
     title = "Scottish salmon mortality by location",
-    subtitle = "Year: {closest_state}",
+    subtitle = "Date reported: {format(frame_time, '%Y-%m-%d')}",
     caption = "Point size and colour both represent reported mortality weight (kg)",
     x = NULL,
     y = NULL
   ) + 
-  enter_fade() + enter_grow() + # smooth fade/scale in
-  exit_fade() + exit_shrink() + # smooth fade/scale out
-  shadow_wake(wake_length = 0.08) +
+  shadow_wake(wake_length = 0.04, alpha = FALSE) +
   guides(alpha = "none", size = guide_legend(title = "Weight (kg)"),
-         colour = guide_colorbar(title = "Weight (kg)")) +
+         colour = guide_colorbar(title = "Total mortality during event")) +
   scale_size_continuous(
     trans = "sqrt",
     labels = label_number(big.mark = ",", accuracy = 1),
@@ -72,11 +87,11 @@ p <- qmplot(x = longitude, y = latitude, data = morts,
   ease_aes("sine-in-out")
 # animate plot
 myAnimation <- animate(p, 
-        duration = 20, 
-        fps = 25, 
-        res = 200, height = 1200, width =1200)
+                       duration = 60, 
+                       fps = 25, 
+                       res = 200, height = 1200, width =1200)
 myAnimation
-anim_save("Scottish salmon mortality/test.gif", animation = myAnimation)
+anim_save("Scottish salmon mortality/morts.gif", animation = myAnimation)
 
 
 # map of locations moving over space
