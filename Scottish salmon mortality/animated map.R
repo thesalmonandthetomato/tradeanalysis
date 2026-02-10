@@ -4,6 +4,7 @@ library(ggmap)
 library(gganimate)
 library(gifski)
 library(av)
+library(e1071)
 library(rnrfa)
 library(readxl)
 library(tidyverse)
@@ -63,8 +64,8 @@ p <- qmplot(x = long, y = lat, data = data,
             size = 1.5) + 
   transition_time(as.numeric(time)) + #adds annual transitions
   labs(title = "Time: {round(frame_time, 0)}") + 
-  ease_aes("sine-in-out") + 
-  shadow_wake(wake_length = 0.4)
+  ease_aes("sine-out") + 
+  shadow_wake(wake_length = 1)
 animate(p, 
         duration = 20, 
         fps = 25, 

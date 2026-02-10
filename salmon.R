@@ -2,6 +2,7 @@ library(readxl)
 library(tidyverse)
 library(scales)
 library(plotly)
+library(htmlwidgets)
 
 
 #' comtrade codes for salmon
@@ -99,7 +100,29 @@ big_importers_time$labels <- paste0(big_importers_time$Year, ": ", big_importers
 # restrict to cage producers
 big_importers_time <- big_importers_time[!is.na(big_importers_time$weight),]
 big_importers_time <- big_importers_time[!is.na(big_importers_time$`Importer ISO3`),]
-
+# order importers by 2022 value
+big_importers_time <- big_importers_time %>%
+  arrange(desc(weight))
+# order factor levels of country
+big_importers_time$Importer <- factor(big_importers_time$Importer,
+                                      levels=c("France",
+                                               "Poland",
+                                               "Sweden",
+                                               "United States",
+                                               "Italy",
+                                               "Denmark",
+                                               "Netherlands",
+                                               "Spain",
+                                               "Brazil",
+                                               "United Kingdom",
+                                               "Germany",
+                                               "Lithuania",
+                                               "China", 
+                                               "Finland",
+                                               "Korea, Republic",
+                                               "Canada",
+                                               "Portugal",
+                                               "Thailand"))
 # plot
 p <- ggplot(data=big_importers_time, aes(x=Year, y=weight, group=Importer, colour=Importer,
                                          text = paste0("Year: ", Year, "\nImporter: ", Importer, "\n", comma(round(weight,0)), " tonnes"))) +
@@ -110,4 +133,10 @@ p <- ggplot(data=big_importers_time, aes(x=Year, y=weight, group=Importer, colou
   theme(axis.text.x = element_text(angle = 90)) +
   xlab("Year") + ylab("Weight (tonnes)")
 
-ggplotly(p, tooltip = c("text"))
+p <- ggplotly(p, tooltip = c("text"))
+
+saveWidget(
+  widget = p,
+  file = "Major-salmon-importers-by-year.html",
+  selfcontained = TRUE
+)
