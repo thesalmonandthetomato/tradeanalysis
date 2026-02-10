@@ -60,7 +60,7 @@ p <- qmplot(x = longitude, y = latitude, data = morts_anim,
   labs(
     title = "Scottish salmon mortality by location",
     subtitle = "Date reported: {format(frame_time, '%Y-%m-%d')}",
-    caption = "Point size and colour both represent reported mortality weight (kg)",
+    caption = "Mortality weight estimated from av. weight x mortalities",
     x = NULL,
     y = NULL
   ) + 
