@@ -34,17 +34,42 @@ register_stadiamaps(key, write = TRUE)
 p <- qmplot(x = longitude, y = latitude, data = morts, 
             group = group, #removes linkages/transitions between data
             size = `Weight (kg)`, 
-            color = "red", 
-            alpha = .7,
-            maptype = 'stamen_terrain_background') + 
-  transition_time(as.numeric(year)) + #adds annual transitions
-  labs(title = "Year: {round(frame_time, 0)}") + 
-  enter_fade() + # fade in 
-  exit_fade() + # fade out
-  guides(colour = "none", alpha = "none", size=guide_legend(title="Weight (kg)")) +
-  scale_size_continuous(labels=function(x) format(x, big.mark = ",", scientific = FALSE),
-                        range = c(1, 10)) + #add thousand separator to numbers
-  ease_aes("exponential-in-out")
+            color = `Weight (kg)`, 
+            alpha = .8,
+            maptype = 'stamen_terrain_background',
+            darken = .12,
+            zoom = 6) + 
+  transition_states(year, transition_length = 1, state_length = 4, wrap = FALSE) + #adds annual transitions
+  labs(
+    title = "Scottish salmon mortality by location",
+    subtitle = "Year: {closest_state}",
+    caption = "Point size and colour both represent reported mortality weight (kg)",
+    x = NULL,
+    y = NULL
+  ) + 
+  enter_fade() + enter_grow() + # smooth fade/scale in
+  exit_fade() + exit_shrink() + # smooth fade/scale out
+  shadow_wake(wake_length = 0.08) +
+  guides(alpha = "none", size = guide_legend(title = "Weight (kg)"),
+         colour = guide_colorbar(title = "Weight (kg)")) +
+  scale_size_continuous(
+    trans = "sqrt",
+    labels = label_number(big.mark = ",", accuracy = 1),
+    range = c(1.5, 11)
+  ) + # add thousand separator to numbers
+  scale_colour_viridis_c(
+    option = "magma",
+    direction = -1,
+    labels = label_number(big.mark = ",", accuracy = 1)
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text = element_blank(),
+    plot.title = element_text(face = "bold"),
+    plot.subtitle = element_text(colour = "grey20")
+  ) +
+  ease_aes("sine-in-out")
 # animate plot
 myAnimation <- animate(p, 
         duration = 20, 
